@@ -1,0 +1,21 @@
+{
+  "name": "hubot-smartdeploy",
+  "version": "0.0.1",
+  "description": "Deployment with chat",
+  "main": "index.coffee",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "hubot",
+    "smartdeploy"
+  ],
+  "author": "terut",
+  "license": "MIT",
+  "repository": {
+  },
+  "dependencies": {
+    "octonode": ">= 0.4.0",
+    "time" : ">=0.10.0"
+  }
+}
