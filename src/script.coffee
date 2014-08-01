@@ -16,6 +16,6 @@ module.exports = (robot) ->
     deployment = new Deployment(msg.robot, msg.envelope, repo, ref, env)
     deployment.deploy (message, success) =>
       if success
-        msg.reply "@here #{message}"
+        msg.send "@here #{message}"
       else
-        msg.reply "@here #{message}"
+        msg.reply message
