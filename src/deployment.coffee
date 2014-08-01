@@ -49,7 +49,7 @@ class Deployment
           if err
             callback("Unable to deploy with #{env}.", false)
           else
-            callback("Deployments event is sent. Wait for shpping it.", true)
+            callback("Deployments event is sent. Wait for shipping it.", true)
       else
         callback('Unable to deploy with unknown deployment type.', false)
 
