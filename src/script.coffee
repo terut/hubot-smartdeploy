@@ -19,3 +19,8 @@ module.exports = (robot) ->
         msg.send "@here #{message}"
       else
         msg.reply message
+
+  robot.respond /deploy\s+status/i, (msg) ->
+    Deployment.status(msg.robot, (text) ->
+      msg.send text
+    )

@@ -2,6 +2,17 @@ api = require('octonode').client(process.env.HUBOT_GITHUB_TOKEN or 'unknown')
 api.requestDefaults.headers['Accept'] = 'application/vnd.github.cannonball-preview+json'
 
 class SmartDeployment
+  @status: (robot, callback) ->
+    data = robot.brain.data.smartdeploy
+
+    status = ""
+    for key1, val1 of data
+      for key2, val2 of val1
+        time = new Date(val2['time'])
+        status += "#{key2}: deploy #{val2['ref']} at #{time} by #{val2['user']}\n  #{val2['url']}\n"
+
+    callback(status)
+
   constructor: (@robot, @username, @repo, ref, @env, @required) ->
     @robot.brain.data.smartdeploy or= {}
     @robot.brain.data.smartdeploy[@env] or= {}
@@ -70,15 +81,5 @@ class SmartDeployment
       ref: @ref,
       url: @url
     }
-
-  status: ->
-    data = @robot.brain.data.smartdeploy
-
-    status = ""
-    for key1, val1 of data
-      for key2, val2 of val1
-        time = new Date(val2['time'])
-        status += "#{key2}: deploy #{val2['ref']} at #{time} by #{val2['user']}\n  #{val2['url']}\n"
-    status
 
 exports.SmartDeployment = SmartDeployment

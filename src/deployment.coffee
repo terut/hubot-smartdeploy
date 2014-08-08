@@ -6,6 +6,9 @@ SmartDeployment = require(Path.join(__dirname, 'deployment/smart')).SmartDeploym
 class Deployment
   @APPS_FILE = process.env['HUBOT_DEPLOY_APPS_JSON'] or  'deployment.json'
 
+  @status: (robot, callback) ->
+    SmartDeployment.status(robot, callback)
+
   constructor: (@robot, @envelope, @repo, @ref, @env) ->
     try
       applications = JSON.parse(Fs.readFileSync(@constructor.APPS_FILE).toString())
