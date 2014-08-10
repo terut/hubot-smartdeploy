@@ -42,11 +42,10 @@ class PullRequestDeployment
     setTimeout cb, secs * 1000
 
   payload: ->
-    time = require('time')
-    now = new time.Date()
-    now.setTimezone("Asia/Tokyo")
+    moment = require('moment')
+    now = moment()
 
-    title = "#{now.getFullYear()}.#{('0' + (now.getMonth() + 1)).slice(-2)}.#{('0' + now.getDate()).slice(-2)} #{@env} deployment by #{@username}"
+    title = "#{now.format("YYYY.MM.DD")} #{@env} deployment by #{@username}"
     toBranch = @ref
     fromBranch = "master"
     body = "- Created by #{@username} on #{@room} Room (via hubot)\n- Discuss about release contents on this pull request"

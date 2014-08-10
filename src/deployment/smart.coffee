@@ -4,14 +4,19 @@ api.requestDefaults.headers['Accept'] = 'application/vnd.github.cannonball-previ
 class SmartDeployment
   @status: (robot, callback) ->
     data = robot.brain.data.smartdeploy
+    moment = require('moment')
 
     status = ""
     for key1, val1 of data
       for key2, val2 of val1
-        time = new Date(val2['time'])
-        status += "#{key2}: deploy #{val2['ref']} at #{time} by #{val2['user']}\n  #{val2['url']}\n"
+        time = moment.unix(val2['time'])
+        status += "#{key2}:\n  branch: #{val2['ref']}\n  deployed_at: #{time.format('YYYY-MM-DD HH:mm')}\n  deployer: #{val2['user']}\n  url: #{val2['url']}\n\n"
 
     callback(status)
+
+  @clearStatus: (robot, callback) ->
+    delete robot.brain.data.smartdeploy
+    callback(true)
 
   constructor: (@robot, @username, @repo, ref, @env, @required) ->
     @robot.brain.data.smartdeploy or= {}
@@ -75,9 +80,11 @@ class SmartDeployment
     hosts or= {}
 
   memory: ->
+    moment = require('moment')
+    now = moment()
     @robot.brain.data.smartdeploy[@env][@hostname] = {
       user: @username,
-      time: new Date().getTime(),
+      time: now.unix(),
       ref: @ref,
       url: @url
     }
