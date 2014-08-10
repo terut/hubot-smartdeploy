@@ -47,6 +47,7 @@ class SmartDeployment
       }
     {
       ref: @ref,
+      auto_merge: false,
       environment: @env,
       payload: payload
     }
