@@ -20,7 +20,7 @@ class SmartDeployment
 
   constructor: (@robot, @username, @repo, ref, @env, @required) ->
     @robot.brain.data.smartdeploy or= {}
-    @robot.brain.data.smartdeploy[@env] or= {}
+    @robot.brain.data.smartdeploy[@repo] or= {}
 
     @ref = ref or "master"
     host = @hostElection()
@@ -52,7 +52,7 @@ class SmartDeployment
     }
 
   hostElection: ->
-    data = @robot.brain.data.smartdeploy[@env]
+    data = @robot.brain.data.smartdeploy[@repo]
     hosts = @hosts()
 
     unusedHosts = []
@@ -82,7 +82,7 @@ class SmartDeployment
   memory: ->
     moment = require('moment')
     now = moment()
-    @robot.brain.data.smartdeploy[@env][@hostname] = {
+    @robot.brain.data.smartdeploy[@repo][@hostname] = {
       user: @username,
       time: now.unix(),
       ref: @ref,
