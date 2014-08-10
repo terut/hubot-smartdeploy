@@ -9,6 +9,9 @@ class Deployment
   @status: (robot, callback) ->
     SmartDeployment.status(robot, callback)
 
+  @clearStatus: (robot, callback) ->
+    SmartDeployment.clearStatus(robot, callback)
+
   constructor: (@robot, @envelope, @repo, @ref, @env) ->
     try
       applications = JSON.parse(Fs.readFileSync(@constructor.APPS_FILE).toString())
