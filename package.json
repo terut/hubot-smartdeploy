@@ -4,7 +4,7 @@
   "description": "Deployment with chat",
   "main": "index.coffee",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cake test"
   },
   "keywords": [
     "hubot",
@@ -16,5 +16,11 @@
   "dependencies": {
     "moment": "^2.8.1",
     "octonode": ">= 0.4.0"
+  },
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "coffee-script": "^1.7.1",
+    "hubot-test-helper": "0.0.2",
+    "mocha": "^1.21.4"
   }
 }
