@@ -83,10 +83,16 @@ class PullRequestDeployment
       rep.prs({state: 'closed'}, (err, data, headers) ->
         prs = {}
         for d in data
+          text = ""
           if d.body
-            prs[d.number] = d.body.split("\n")[0]
+            line = d.body.split("\n")[0]
+            if /https?:\/\//.test(line)
+              text = line
+            else
+              text = d.title
           else
-            prs[d.number] = d.title
+             text = d.title
+          prs[d.number] = text
 
         for p in targetPrs
           body += "- ##{p.number} #{prs[p.number]} @#{p.author}\n"
