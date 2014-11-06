@@ -64,22 +64,39 @@ class PullRequestDeployment
     body += "\n\n### Changelog\n\n"
 
     pr = api.pr(@repo, number)
+    rep = api.repo(@repo)
     pr.commits (err, data, headers) ->
+      targetPrs = []
       for d in data
         # Merge pull request #199 from davia/feature/remove_halloween\n\nRemove halloween
-        match = d.commit.message.match(/Merge pull request (#[0-9]*) from .*\n\n(.*)/)
+        match = d.commit.message.match(/Merge pull request #([0-9]*) from .*\n\n(.*)/)
         unless match
           continue
 
-        pr_number = match[1]
-        title = match[2]
-        body += "- #{pr_number} #{title} by @#{d.author.login}\n"
+        pullrequest = {
+          number: match[1],
+          title: match[2]
+          author: d.author.login
+        }
+        targetPrs.push(pullrequest)
 
-      pr.update({
-        'body': body
-      }, (err, data, headers) ->
-        if err
-          console.log(err)
+      rep.prs({state: 'closed'}, (err, data, headers) ->
+        prs = {}
+        for d in data
+          if d.body
+            prs[d.number] = d.body.split("\n")[0]
+          else
+            prs[d.number] = d.title
+
+        for p in targetPrs
+          body += "- ##{p.number} #{prs[p.number]} @#{p.author}\n"
+
+        pr.update({
+          'body': body
+        }, (err, data, headers) ->
+          if err
+            console.log(err)
+        )
       )
 
 exports.PullRequestDeployment = PullRequestDeployment
