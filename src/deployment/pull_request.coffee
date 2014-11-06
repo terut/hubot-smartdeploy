@@ -8,12 +8,13 @@ class PullRequestDeployment
     @log = null
 
   run: (callback) ->
-    api.repo(@repo).pr(@payload, (err, data, headers) ->
+    api.repo(@repo).pr(@payload, (err, data, headers) =>
       # err object already lost detail message, therefore it updates err.message
       if err
         err.message = "Creating pull request is failure."
+      else
+        @updatePullRequest(data.number, data.body)
 
-      @updatePullRequest(data.number, data.body)
       callback(err, data, headers)
     )
 
@@ -47,6 +48,7 @@ class PullRequestDeployment
     now = moment()
 
     title = "#{now.format("YYYY.MM.DD")} #{@env} deployment by #{@username}"
+
     toBranch = @ref
     fromBranch = "master"
     body = "- Created by #{@username} on #{@room} Room (via hubot)\n- Discuss about release contents on this pull request"
@@ -59,10 +61,9 @@ class PullRequestDeployment
     }
 
   updatePullRequest: (number, body) ->
-    console.log("update pull request")
     body += "\n\n### Changelog\n\n"
 
-    pr = api.pr(@repos, number)
+    pr = api.pr(@repo, number)
     pr.commits (err, data, headers) ->
       for d in data
         # Merge pull request #199 from davia/feature/remove_halloween\n\nRemove halloween
@@ -72,9 +73,7 @@ class PullRequestDeployment
 
         pr_number = match[1]
         title = match[2]
-        body += "- #{pr_number} #{title} by @#{d.author.login}"
-
-      console.log("patch pull request")
+        body += "- #{pr_number} #{title} by @#{d.author.login}\n"
 
       pr.update({
         'body': body

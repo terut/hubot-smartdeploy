@@ -33,7 +33,7 @@ class Deployment
 
     switch config['type']
       when 'pull_request'
-        room = @envelope.room
+        room = @envelope.room || "Unknown"
         deployment = new PullRequestDeployment(username, room, @repo, @ref, @env, @required())
 
         if @isAutoMerge()
