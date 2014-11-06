@@ -61,7 +61,8 @@ class PullRequestDeployment
   updatePullRequest: (number, body) ->
       body += "\n\n### Changelog\n\n"
 
-      api.pr(@repos, number).commits (err, data, headers) ->
+      pr = api.pr(@repos, number)
+      pr.commits (err, data, headers) ->
         for d in data
           # Merge pull request #199 from davia/feature/remove_halloween\n\nRemove halloween
           match = d.commit.message.match(/Merge pull request (#[0-9]*) from .*\n\n(.*)/)
@@ -72,7 +73,7 @@ class PullRequestDeployment
           title = match[2]
           body += "- #{pr_number} #{title} by @#{d.author.login}"
 
-        api.pr(@repos, number).update({
+        pr.update({
           'body': body
         }, (err, data, headers) ->
           if err
