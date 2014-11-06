@@ -13,6 +13,7 @@ class PullRequestDeployment
       if err
         err.message = "Creating pull request is failure."
 
+      @updatePullRequest(data.number, data.body)
       callback(err, data, headers)
     )
 
@@ -56,5 +57,26 @@ class PullRequestDeployment
       base: toBranch,
       body: body
     }
+
+  updatePullRequest: (number, body) ->
+      body += "\n\n### Changelog\n\n"
+
+      api.pr(@repos, number).commits (err, data, headers) ->
+        for d in data
+          # Merge pull request #199 from davia/feature/remove_halloween\n\nRemove halloween
+          match = d.commit.message.match(/Merge pull request (#[0-9]*) from .*\n\n(.*)/)
+          unless match
+            continue
+
+          pr_number = match[1]
+          title = match[2]
+          body += "- #{pr_number} #{title} by @#{d.author.login}"
+
+        api.pr(@repos, number).update({
+          'body': body
+        }, (err, data, headers) ->
+          if err
+            console.log(err)
+        )
 
 exports.PullRequestDeployment = PullRequestDeployment
