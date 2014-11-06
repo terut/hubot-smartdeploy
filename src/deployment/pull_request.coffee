@@ -59,25 +59,28 @@ class PullRequestDeployment
     }
 
   updatePullRequest: (number, body) ->
-      body += "\n\n### Changelog\n\n"
+    console.log("update pull request")
+    body += "\n\n### Changelog\n\n"
 
-      pr = api.pr(@repos, number)
-      pr.commits (err, data, headers) ->
-        for d in data
-          # Merge pull request #199 from davia/feature/remove_halloween\n\nRemove halloween
-          match = d.commit.message.match(/Merge pull request (#[0-9]*) from .*\n\n(.*)/)
-          unless match
-            continue
+    pr = api.pr(@repos, number)
+    pr.commits (err, data, headers) ->
+      for d in data
+        # Merge pull request #199 from davia/feature/remove_halloween\n\nRemove halloween
+        match = d.commit.message.match(/Merge pull request (#[0-9]*) from .*\n\n(.*)/)
+        unless match
+          continue
 
-          pr_number = match[1]
-          title = match[2]
-          body += "- #{pr_number} #{title} by @#{d.author.login}"
+        pr_number = match[1]
+        title = match[2]
+        body += "- #{pr_number} #{title} by @#{d.author.login}"
 
-        pr.update({
-          'body': body
-        }, (err, data, headers) ->
-          if err
-            console.log(err)
-        )
+      console.log("patch pull request")
+
+      pr.update({
+        'body': body
+      }, (err, data, headers) ->
+        if err
+          console.log(err)
+      )
 
 exports.PullRequestDeployment = PullRequestDeployment
