@@ -12,7 +12,7 @@ class Deployment
   @clearStatus: (robot, callback) ->
     SmartDeployment.clearStatus(robot, callback)
 
-  constructor: (@robot, @envelope, @repo, @ref, @env) ->
+  constructor: (@robot, @envelope, @repo, @ref, @env, @comment) ->
     try
       applications = JSON.parse(Fs.readFileSync(@constructor.APPS_FILE).toString())
       @application = applications[@repo] or {}
@@ -50,7 +50,7 @@ class Deployment
               message = "Pull request is created. Please check change log.\n#{data.html_url}"
               callback(message, true)
       when 'smart'
-        deployment = new SmartDeployment(@robot, username, @repo, @ref, @env, @required())
+        deployment = new SmartDeployment(@robot, username, @repo, @ref, @env, @comment, @required())
         deployment.run (err, data, headers) ->
           if err
             callback("Unable to deploy with #{env}.", false)

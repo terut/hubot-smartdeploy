@@ -10,7 +10,7 @@ class SmartDeployment
     for key1, val1 of data
       for key2, val2 of val1
         time = moment.unix(val2['time'])
-        status += "#{key2}:\n  branch: #{val2['ref']}\n  deployed_at: #{time.format('YYYY-MM-DD HH:mm')}\n  deployer: #{val2['user']}\n  url: #{val2['url']}\n\n"
+        status += "#{key2}:\n  branch: #{val2['ref']}\n  deployed_at: #{time.format('YYYY-MM-DD HH:mm')}\n  deployer: #{val2['user']}\n  url: #{val2['url']}\n  comment: #{val2['comment']}\n\n"
 
     callback(status)
 
@@ -18,7 +18,7 @@ class SmartDeployment
     delete robot.brain.data.smartdeploy
     callback(true)
 
-  constructor: (@robot, @username, @repo, ref, @env, @required) ->
+  constructor: (@robot, @username, @repo, ref, @env, @comment, @required) ->
     @robot.brain.data.smartdeploy or= {}
     @robot.brain.data.smartdeploy[@repo] or= {}
 
@@ -87,7 +87,8 @@ class SmartDeployment
       user: @username,
       time: now.unix(),
       ref: @ref,
-      url: @url
+      url: @url,
+      comment: @comment
     }
 
 exports.SmartDeployment = SmartDeployment
